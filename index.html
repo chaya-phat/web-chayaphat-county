@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flâneur en France | เที่ยวฝรั่งเศส</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --navy-deep:#10182C;
+    --ivoire:#F6F1E7;
+    --ivoire-soft:#FBF7EF;
+    --lavender:#9B8FB5;
+    --lavender-deep:#7E72A0;
+    --rouge:#C8453D;
+    --ink:#262420;
+    --gold:#C9A05A;
+    --line:rgba(27,42,74,0.13);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Noto Sans Thai','EB Garamond',sans-serif;
+    background:var(--ivoire);
+    color:var(--ink);
+    line-height:1.8;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Playfair Display','Noto Serif Thai',serif;
+    font-weight:700;
+    letter-spacing:0.01em;
+  }
+
+  a{text-decoration:none;color:inherit;}
+  img{display:block;max-width:100%;}
+  ul{list-style:none;}
+
+  /* ===== Scroll progress marker ===== */
+  .seal-track{
+    position:fixed;
+    right:18px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:60;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+  .seal-dot{
+    width:11px;height:11px;
+    border-radius:50%;
+    border:1.5px solid var(--rouge);
+    background:transparent;
+    cursor:pointer;
+    transition:all .35s ease;
+    position:relative;
+  }
+  .seal-dot.active{
+    background:var(--rouge);
+    box-shadow:0 0 0 4px rgba(200,69,61,0.15);
+  }
+  .seal-dot::after{
+    content:attr(data-label);
+    position:absolute;
+    right:22px;
+    top:50%;
+    transform:translateY(-50%);
+    font-family:'Playfair Display',serif;
+    font-size:0.78rem;
+    white-space:nowrap;
+    color:var(--navy);
+    opacity:0;
+    transition:opacity .25s ease;
+    pointer-events:none;
+    background:var(--ivoire-soft);
+    padding:3px 10px;
+    border-radius:3px;
+    border:1px solid var(--line);
+  }
+  .seal-dot:hover::after{opacity:1;}
+  @media (max-width:780px){ .seal-track{display:none;} }
+
+  /* ===== Header / Nav ===== */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    background:rgba(246,241,231,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    transition:background .3s ease;
+  }
+  .tricolore-bar{
+    height:3px;
+    display:flex;
+  }
+  .tricolore-bar span{flex:1;}
+  .tricolore-bar span:nth-child(1){background:var(--navy);}
+  .tricolore-bar span:nth-child(2){background:var(--ivoire-soft);}
+  .tricolore-bar span:nth-child(3){background:var(--rouge);}
+
+  .nav-wrap{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 28px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Playfair Display',serif;
+    font-size:1.15rem;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .brand .mark{
+    width:30px;height:30px;
+    border-radius:50%;
+    background:var(--rouge);
+    color:var(--ivoire);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;
+    font-size:1.05rem;
+    font-style:italic;
+  }
+  nav ul{display:flex;gap:6px;}
+  nav a{
+    font-size:0.92rem;
+    font-weight:600;
+    color:var(--navy);
+    padding:9px 16px;
+    border-radius:4px;
+    position:relative;
+    transition:color .25s ease;
+    letter-spacing:0.01em;
+  }
+  nav a::after{
+    content:'';
+    position:absolute;
+    left:16px;right:16px;bottom:6px;
+    height:1.5px;
+    background:var(--rouge);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .3s ease;
+  }
+  nav a:hover::after, nav a.active::after{transform:scaleX(1);}
+  nav a.active{color:var(--rouge);}
+  .nav-toggle{display:none;background:none;border:none;font-size:1.6rem;color:var(--navy);cursor:pointer;}
+
+  @media (max-width:780px){
+    nav ul{
+      position:fixed;top:67px;left:0;right:0;
+      flex-direction:column;
+      background:var(--ivoire-soft);
+      border-bottom:1px solid var(--line);
+      padding:10px 20px 18px;
+      gap:2px;
+      transform:translateY(-110%);
+      opacity:0;
+      transition:all .3s ease;
+      pointer-events:none;
+    }
+    nav ul.open{transform:translateY(0);opacity:1;pointer-events:auto;}
+    nav a{display:block;padding:12px 8px;border-bottom:1px solid var(--line);}
+    .nav-toggle{display:block;}
+  }
+
+  section{
+    padding:120px 28px 90px;
+    max-width:1180px;
+    margin:0 auto;
+    scroll-margin-top:70px;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'EB Garamond',serif;
+    font-style:italic;
+    font-size:0.85rem;
+    letter-spacing:0.1em;
+    color:var(--rouge);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;height:1.5px;
+    background:var(--rouge);
+  }
+
+  /* ===== HOME ===== */
+  #home{
+    padding-top:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    position:relative;
+    max-width:none;
+    overflow:hidden;
+  }
+  .hero-grid{
+    max-width:1180px;
+    margin:0 auto;
+    width:100%;
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:50px;
+    align-items:center;
+    padding:140px 28px 90px;
+    position:relative;
+    z-index:2;
+  }
+  .hero-text .eyebrow{margin-bottom:14px;}
+  .hero-text h1{
+    font-size:clamp(2.6rem,5.2vw,4.4rem);
+    color:var(--navy);
+    line-height:1.12;
+    margin-bottom:6px;
+  }
+  .hero-text .fr-sub{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--rouge);
+    font-size:1.05rem;
+    letter-spacing:0.04em;
+    margin-bottom:22px;
+    display:block;
+  }
+  .hero-text p{
+    font-size:1.08rem;
+    color:#43403a;
+    max-width:520px;
+    margin-bottom:30px;
+  }
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 26px;
+    border-radius:3px;
+    font-weight:700;
+    font-size:0.95rem;
+    transition:all .3s ease;
+    border:1.5px solid var(--navy);
+  }
+  .btn-solid{background:var(--navy);color:var(--ivoire);}
+  .btn-solid:hover{background:var(--rouge);border-color:var(--rouge);transform:translateY(-2px);}
+  .btn-outline{background:transparent;color:var(--navy);}
+  .btn-outline:hover{background:var(--navy);color:var(--ivoire);transform:translateY(-2px);}
+
+  .hero-visual{
+    position:relative;
+    aspect-ratio:4/5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero-visual svg{width:100%;height:100%;}
+
+  .vert-fr{
+    position:absolute;
+    top:140px;
+    left:6px;
+    writing-mode:vertical-rl;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:0.95rem;
+    letter-spacing:0.3em;
+    color:var(--navy);
+    opacity:0.35;
+    z-index:1;
+  }
+  @media(max-width:780px){ .vert-fr{display:none;} }
+
+  .stat-row{
+    display:flex;
+    gap:36px;
+    margin-top:38px;
+    flex-wrap:wrap;
+  }
+  .stat-row div{border-left:2px solid var(--rouge);padding-left:14px;}
+  .stat-num{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);font-weight:700;}
+  .stat-label{font-size:0.8rem;color:#6b675f;}
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;text-align:left;}
+    .hero-visual{order:-1;max-width:380px;margin:0 auto;}
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .sec-head{margin-bottom:54px;max-width:680px;}
+  .sec-head h2{font-size:clamp(2rem,3.6vw,2.8rem);color:var(--navy);margin-bottom:14px;}
+  .sec-head p{color:#5a564d;font-size:1.02rem;}
+
+  /* ===== ATTRACTIONS ===== */
+  .attractions-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:30px;
+  }
+  @media(max-width:980px){ .attractions-grid{grid-template-columns:1fr;} }
+
+  .attr-card{
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    transition:transform .35s ease, box-shadow .35s ease;
+    display:flex;
+    flex-direction:column;
+  }
+  .attr-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 22px 40px -18px rgba(27,42,74,0.28);
+  }
+  .attr-media{
+    aspect-ratio:16/11;
+    position:relative;
+    overflow:hidden;
+    background:var(--navy);
+  }
+  .attr-media svg{width:100%;height:100%;}
+  .attr-tag{
+    position:absolute;
+    top:14px;left:14px;
+    background:rgba(246,241,231,0.92);
+    color:var(--rouge);
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    padding:5px 12px;
+    border-radius:30px;
+    z-index:3;
+  }
+  .attr-num{
+    position:absolute;
+    bottom:14px;right:16px;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--ivoire);
+    font-size:2.2rem;
+    opacity:0.55;
+    z-index:3;
+  }
+  .attr-body{padding:26px 24px 28px;flex:1;display:flex;flex-direction:column;}
+  .attr-body h3{font-size:1.3rem;color:var(--navy);margin-bottom:4px;}
+  .attr-fr{font-family:'Playfair Display',serif;font-style:italic;color:var(--rouge);font-size:0.85rem;display:block;margin-bottom:14px;letter-spacing:0.02em;}
+  .attr-body p{font-size:0.93rem;color:#55514a;flex:1;}
+  .attr-meta{
+    display:flex;
+    gap:16px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+    font-size:0.78rem;
+    color:#7a766c;
+    flex-wrap:wrap;
+  }
+  .attr-meta span{display:flex;align-items:center;gap:5px;}
+
+  /* ===== WORLD TICKETS ===== */
+  .tickets-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:34px;
+  }
+  @media(max-width:980px){ .tickets-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;} }
+
+  .ticket-card{
+    perspective:1200px;
+  }
+  .ticket-inner{
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 18px 38px -16px rgba(27,42,74,0.32);
+    transition:transform .4s ease, box-shadow .4s ease;
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+  }
+  .ticket-card:hover .ticket-inner{
+    transform:translateY(-10px) rotate(-0.6deg);
+    box-shadow:0 28px 50px -16px rgba(27,42,74,0.4);
+  }
+  .ticket-media{
+    aspect-ratio:4/5;
+    position:relative;
+    overflow:hidden;
+  }
+  .ticket-media svg{width:100%;height:100%;}
+  .ticket-flagbar{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:7px;
+    display:flex;
+    z-index:4;
+  }
+  .ticket-flagbar span{flex:1;}
+  .ticket-country-tag{
+    position:absolute;
+    top:18px;left:16px;
+    z-index:4;
+    background:rgba(255,255,255,0.92);
+    color:var(--navy);
+    font-size:0.7rem;
+    font-weight:800;
+    letter-spacing:0.12em;
+    padding:5px 12px;
+    border-radius:30px;
+  }
+  .ticket-stub{
+    padding:20px 22px 24px;
+    position:relative;
+  }
+  .ticket-stub::before{
+    content:'';
+    position:absolute;
+    top:-9px;left:50%;
+    transform:translateX(-50%);
+    width:calc(100% - 36px);
+    border-top:2px dashed rgba(27,42,74,0.18);
+  }
+  .ticket-stub h3{font-size:1.18rem;color:var(--navy);margin-bottom:3px;}
+  .ticket-stub .ticket-sub{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:0.82rem;
+    color:var(--rouge);
+    display:block;
+    margin-bottom:12px;
+  }
+  .ticket-stub p{font-size:0.88rem;color:#55514a;margin-bottom:14px;}
+  .ticket-code-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.72rem;
+    color:#8a867c;
+    letter-spacing:0.05em;
+    border-top:1px solid var(--line);
+    padding-top:12px;
+  }
+  .ticket-code-row .barcode{
+    display:flex;
+    gap:2px;
+    align-items:flex-end;
+  }
+  .ticket-code-row .barcode span{
+    display:block;
+    width:2px;
+    background:var(--navy);
+  }
+
+  /* ===== FOOD & CULTURE ===== */
+  .fc-block{margin-bottom:80px;}
+  .fc-block:last-child{margin-bottom:0;}
+  .fc-label{display:flex;align-items:baseline;gap:14px;margin-bottom:34px;}
+  .fc-label .num{font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;color:var(--rouge);font-weight:700;}
+  .fc-label h2{font-size:1.9rem;color:var(--navy);}
+
+  .food-strip{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+  }
+  @media(max-width:900px){ .food-strip{grid-template-columns:1fr;} }
+
+  .food-card{
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    transition:box-shadow .3s ease, transform .3s ease;
+  }
+  .food-card:hover{transform:translateY(-6px);box-shadow:0 18px 32px -16px rgba(27,42,74,0.22);}
+  .food-media{aspect-ratio:4/3;background:var(--lavender);position:relative;overflow:hidden;}
+  .food-media svg{width:100%;height:100%;}
+  .food-body{padding:20px 22px 24px;}
+  .food-body h3{font-size:1.12rem;color:var(--navy);margin-bottom:6px;}
+  .food-body p{font-size:0.88rem;color:#5a564d;}
+
+  .culture-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+  }
+  @media(max-width:780px){ .culture-grid{grid-template-columns:1fr;} }
+  .culture-card{
+    background:var(--navy);
+    color:var(--ivoire);
+    border-radius:4px;
+    padding:32px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .culture-card::before{
+    content:'';
+    position:absolute;
+    right:-30px;top:-30px;
+    width:140px;height:140px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(200,69,61,0.35),transparent 70%);
+  }
+  .culture-card h3{font-size:1.25rem;margin-bottom:10px;color:var(--ivoire);}
+  .culture-card .fr{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:0.85rem;display:block;margin-bottom:14px;}
+  .culture-card p{font-size:0.92rem;color:#dfe2e6;position:relative;z-index:2;}
+
+  .festival-row{
+    display:flex;
+    gap:24px;
+    overflow-x:auto;
+    padding-bottom:10px;
+    scrollbar-width:thin;
+  }
+  .festival-card{
+    min-width:240px;
+    flex:1;
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+    border-left:4px solid var(--rouge);
+    border-radius:4px;
+    padding:22px 22px 24px;
+  }
+  .festival-card h4{font-size:1.05rem;color:var(--navy);margin-bottom:6px;}
+  .festival-card .when{font-size:0.78rem;color:var(--rouge);font-weight:700;letter-spacing:0.04em;margin-bottom:10px;display:block;}
+  .festival-card p{font-size:0.86rem;color:#5a564d;}
+
+  /* ===== ABOUT ===== */
+  #about{padding-top:120px;}
+  .about-wrap{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:54px;
+    align-items:start;
+  }
+  @media(max-width:860px){ .about-wrap{grid-template-columns:1fr;} }
+
+  .about-photo{
+    position:relative;
+  }
+  .photo-frame{
+    aspect-ratio:3/4;
+    background:var(--navy);
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:14px 14px 0 var(--lavender);
+  }
+  .photo-frame svg{width:100%;height:100%;}
+  .photo-caption{
+    margin-top:26px;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--rouge);
+    font-size:0.85rem;
+    letter-spacing:0.04em;
+  }
+
+  .about-info h2{font-size:2rem;color:var(--navy);margin-bottom:6px;}
+  .about-info .role{color:#6b675f;font-size:0.95rem;margin-bottom:30px;display:block;}
+
+  .info-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:30px;
+  }
+  .info-table tr{border-bottom:1px solid var(--line);}
+  .info-table tr:last-child{border-bottom:none;}
+  .info-table td{padding:14px 10px;font-size:0.95rem;}
+  .info-table td:first-child{
+    color:var(--rouge);
+    font-weight:700;
+    width:160px;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:0.92rem;
+    letter-spacing:0.01em;
+  }
+  .info-table td:last-child{color:var(--ink);}
+
+  .about-note{
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:4px;
+    padding:22px 24px;
+    font-size:0.92rem;
+    color:#55514a;
+  }
+
+  /* ===== MUSIC POPUP ===== */
+  .music-fab{
+    position:fixed;
+    bottom:26px;
+    right:26px;
+    z-index:70;
+    width:58px;height:58px;
+    border-radius:50%;
+    background:var(--navy);
+    border:2px solid var(--gold);
+    color:var(--ivoire);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 14px 30px -10px rgba(27,42,74,0.55);
+    transition:transform .3s ease, background .3s ease;
+  }
+  .music-fab:hover{transform:scale(1.08);background:var(--rouge);}
+  .music-fab svg{width:24px;height:24px;}
+  .music-fab .pulse-ring{
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    opacity:0;
+  }
+  .music-fab.playing .pulse-ring{
+    animation:fabPulse 1.8s ease-out infinite;
+  }
+  @keyframes fabPulse{
+    0%{transform:scale(0.9);opacity:0.7;}
+    100%{transform:scale(1.5);opacity:0;}
+  }
+
+  .music-popup{
+    position:fixed;
+    bottom:96px;
+    right:26px;
+    z-index:70;
+    width:320px;
+    max-width:calc(100vw - 40px);
+    background:var(--ivoire-soft);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 24px 50px -14px rgba(27,42,74,0.4);
+    overflow:hidden;
+    transform:translateY(18px) scale(0.96);
+    opacity:0;
+    pointer-events:none;
+    transition:all .3s ease;
+  }
+  .music-popup.open{
+    transform:translateY(0) scale(1);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .music-popup-head{
+    background:var(--navy);
+    color:var(--ivoire);
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .music-popup-head .label{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:0.95rem;
+  }
+  .music-popup-head .label small{
+    display:block;
+    font-family:'Noto Sans Thai',sans-serif;
+    font-style:normal;
+    font-size:0.7rem;
+    color:var(--gold);
+    letter-spacing:0.06em;
+    margin-top:2px;
+  }
+  .music-popup-close{
+    background:none;
+    border:none;
+    color:var(--ivoire);
+    font-size:1.2rem;
+    cursor:pointer;
+    line-height:1;
+    opacity:0.75;
+    transition:opacity .2s ease;
+  }
+  .music-popup-close:hover{opacity:1;}
+  .music-popup-body{padding:14px;}
+  .music-popup-body iframe{
+    border-radius:10px;
+    border:none;
+    width:100%;
+    display:block;
+  }
+  .music-popup-foot{
+    padding:10px 18px 16px;
+    font-size:0.74rem;
+    color:#8a867c;
+    text-align:center;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    text-align:center;
+    padding:40px 28px 36px;
+    border-top:1px solid var(--line);
+    color:#8a867c;
+    font-size:0.82rem;
+  }
+  footer .fr{
+    display:block;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--rouge);
+    margin-bottom:6px;
+    font-size:0.95rem;
+  }
+
+  ::selection{background:var(--lavender);color:var(--ivoire-soft);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--rouge);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="seal-track" id="sealTrack">
+  <div class="seal-dot active" data-target="home" data-label="หน้าแรก"></div>
+  <div class="seal-dot" data-target="attractions" data-label="สถานที่ท่องเที่ยว"></div>
+  <div class="seal-dot" data-target="tickets" data-label="ตั๋วเดินทาง"></div>
+  <div class="seal-dot" data-target="food" data-label="อาหาร & วัฒนธรรม"></div>
+  <div class="seal-dot" data-target="about" data-label="ผู้จัดทำ"></div>
+</div>
+
+<header>
+  <div class="tricolore-bar"><span></span><span></span><span></span></div>
+  <div class="nav-wrap">
+    <a href="#home" class="brand"><span class="mark">F</span> Flâneur en France</a>
+    <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู">☰</button>
+    <nav>
+      <ul id="navList">
+        <li><a href="#home" class="nav-link active" data-target="home">หน้าแรก</a></li>
+        <li><a href="#attractions" class="nav-link" data-target="attractions">สถานที่ท่องเที่ยว</a></li>
+        <li><a href="#tickets" class="nav-link" data-target="tickets">ตั๋วเดินทาง</a></li>
+        <li><a href="#food" class="nav-link" data-target="food">อาหารและวัฒนธรรม</a></li>
+        <li><a href="#about" class="nav-link" data-target="about">ผู้จัดทำ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HOME ============ -->
+<section id="home">
+  <span class="vert-fr">Bienvenue en France</span>
+  <div class="hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow">Destination Guide · 2026</span>
+      <h1>Welcome<br>to France</h1>
+      <span class="fr-sub">Bienvenue en France — ดินแดนแห่งศิลปะและความโรแมนติก</span>
+      <p>ประเทศฝรั่งเศสเป็นประเทศที่มีความโดดเด่นด้านศิลปะ สถาปัตยกรรม และอาหารระดับโลก ตั้งแต่หอไอเฟลอันเลื่องชื่อ พระราชวังแวร์ซายอันยิ่งใหญ่ ไปจนถึงหมู่บ้านกลางหุบเขาที่งดงาม ทุกมุมของฝรั่งเศสเล่าเรื่องราวความสมดุลระหว่างประวัติศาสตร์และความทันสมัยได้อย่างหรูหรา</p>
+      <div class="hero-cta">
+        <a href="#attractions" class="btn btn-solid">สำรวจสถานที่ท่องเที่ยว →</a>
+        <a href="#food" class="btn btn-outline">อาหาร & วัฒนธรรม</a>
+      </div>
+      <div class="stat-row">
+        <div><div class="stat-num">18</div><div class="stat-label">แคว้น (Régions)</div></div>
+        <div><div class="stat-num">49</div><div class="stat-label">มรดกโลก UNESCO</div></div>
+        <div><div class="stat-num">4</div><div class="stat-label">ฤดูกาลที่ชัดเจน</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <svg viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#9B8FB5"/>
+            <stop offset="55%" stop-color="#D9B98A"/>
+            <stop offset="100%" stop-color="#F6F1E7"/>
+          </linearGradient>
+        </defs>
+        <rect width="500" height="600" fill="url(#skyGrad)"/>
+        <!-- sun -->
+        <circle cx="380" cy="120" r="55" fill="#C9A05A" opacity="0.8"/>
+        <!-- river Seine -->
+        <rect x="0" y="430" width="500" height="170" fill="#1B2A4A"/>
+        <path d="M0 430 Q125 420 250 430 T500 430 V450 H0 Z" fill="#27395E"/>
+        <!-- Eiffel Tower silhouette -->
+        <g fill="#1B2A4A">
+          <path d="M250 80 L222 360 L205 360 L243 90 Z"/>
+          <path d="M250 80 L278 360 L295 360 L257 90 Z"/>
+          <path d="M196 360 L304 360 L298 380 L202 380 Z"/>
+          <rect x="225" y="250" width="50" height="6"/>
+          <rect x="212" y="320" width="76" height="6"/>
+          <rect x="190" y="380" width="120" height="10"/>
+          <rect x="170" y="392" width="160" height="10"/>
+          <rect x="246" y="55" width="8" height="30"/>
+        </g>
+        <!-- arches at base -->
+        <path d="M202 380 Q250 340 298 380" stroke="#1B2A4A" stroke-width="6" fill="none"/>
+        <!-- bridge -->
+        <path d="M40 440 Q250 405 460 440" stroke="#3A4D74" stroke-width="5" fill="none"/>
+        <rect x="55" y="440" width="6" height="20" fill="#3A4D74"/>
+        <rect x="130" y="430" width="6" height="30" fill="#3A4D74"/>
+        <rect x="365" y="430" width="6" height="30" fill="#3A4D74"/>
+        <rect x="440" y="440" width="6" height="20" fill="#3A4D74"/>
+        <!-- lavender sprig accent -->
+        <g transform="translate(60,420)" opacity="0.9">
+          <path d="M0 0 Q-15 -45 -10 -75" stroke="#262420" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="-9" cy="-30" rx="5" ry="11" fill="#9B8FB5" transform="rotate(15 -9 -30)"/>
+          <ellipse cx="-13" cy="-45" rx="5" ry="11" fill="#7E72A0" transform="rotate(10 -13 -45)"/>
+          <ellipse cx="-9" cy="-60" rx="5" ry="11" fill="#9B8FB5" transform="rotate(5 -9 -60)"/>
+          <ellipse cx="-11" cy="-74" rx="5" ry="10" fill="#7E72A0"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ATTRACTIONS ============ -->
+<section id="attractions">
+  <span class="eyebrow">Must-Visit Places</span>
+  <div class="sec-head">
+    <h2>สถานที่ท่องเที่ยว</h2>
+    <p>จากหอคอยเหล็กสัญลักษณ์ของชาติ สู่พระราชวังแสนหรูหรา และเกาะอารามกลางทะเล — สามจุดหมายปลายทางที่สรุปความงามของฝรั่งเศสได้ในทริปเดียว</p>
+  </div>
+
+  <div class="attractions-grid">
+
+    <!-- Eiffel Tower -->
+    <article class="attr-card">
+      <div class="attr-media">
+        <span class="attr-tag">สถาปัตยกรรม</span>
+        <span class="attr-num">01</span>
+        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#9B8FB5"/>
+              <stop offset="100%" stop-color="#D9B98A"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="280" fill="url(#g1)"/>
+          <g fill="#1B2A4A">
+            <path d="M200 40 L182 220 L170 220 L195 48 Z"/>
+            <path d="M200 40 L218 220 L230 220 L205 48 Z"/>
+            <rect x="178" y="150" width="44" height="5"/>
+            <rect x="168" y="190" width="64" height="5"/>
+            <rect x="150" y="220" width="100" height="8"/>
+            <rect x="135" y="232" width="130" height="8"/>
+          </g>
+          <rect x="0" y="240" width="400" height="40" fill="#27395E"/>
+          <circle cx="70" cy="55" r="7" fill="#F6F1E7" opacity="0.7"/>
+          <circle cx="90" cy="48" r="9" fill="#F6F1E7" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="attr-body">
+        <h3>หอไอเฟล</h3>
+        <span class="attr-fr">Tour Eiffel — Eiffel Tower</span>
+        <p>หอไอเฟลเป็นสัญลักษณ์ที่โดดเด่นที่สุดของประเทศฝรั่งเศสและเป็นหนึ่งในสถานที่ที่มีผู้มาเยือนมากที่สุดในโลก สร้างขึ้นในปี ค.ศ. 1889 โดยกุสตาฟ เอฟเฟล เพื่อร่วมงานเอ็กซ์โปนานาชาติ ด้วยความสูงกว่า 330 เมตร ทำให้เป็นสิ่งก่อสร้างที่สูงที่สุดในปารีส นักท่องเที่ยวสามารถขึ้นไปชมวิวเมืองปารีสแบบ 360 องศาได้จากชั้นบนสุด โดยเฉพาะช่วงพระอาทิตย์ตกที่แสงสีทองสะท้อนกับแม่น้ำแซนทำให้บรรยากาศโรแมนติกเป็นพิเศษ ในเวลากลางคืนหอไอเฟลยังประดับไฟกะพริบทุกชั่วโมงเป็นการแสดงแสงที่งดงามไม่ควรพลาด</p>
+        <div class="attr-meta">
+          <span>📍 กรุงปารีส</span>
+          <span>🗓️ เที่ยวได้ทั้งปี</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Palace of Versailles -->
+    <article class="attr-card">
+      <div class="attr-media">
+        <span class="attr-tag">ประวัติศาสตร์</span>
+        <span class="attr-num">02</span>
+        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C9A05A"/>
+              <stop offset="100%" stop-color="#9B8FB5"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="280" fill="url(#g2)"/>
+          <rect x="40" y="140" width="320" height="100" fill="#F6F1E7"/>
+          <rect x="40" y="125" width="320" height="18" fill="#1B2A4A"/>
+          <rect x="70" y="155" width="26" height="60" fill="#9B8FB5"/>
+          <rect x="125" y="155" width="26" height="60" fill="#9B8FB5"/>
+          <rect x="180" y="150" width="40" height="90" fill="#1B2A4A"/>
+          <rect x="248" y="155" width="26" height="60" fill="#9B8FB5"/>
+          <rect x="303" y="155" width="26" height="60" fill="#9B8FB5"/>
+          <path d="M170 150 L200 110 L230 150 Z" fill="#1B2A4A"/>
+          <rect x="0" y="240" width="400" height="40" fill="#6E8B5E"/>
+          <circle cx="200" cy="255" r="14" fill="#7AA06A"/>
+        </svg>
+      </div>
+      <div class="attr-body">
+        <h3>พระราชวังแวร์ซาย</h3>
+        <span class="attr-fr">Château de Versailles</span>
+        <p>พระราชวังแวร์ซายตั้งอยู่นอกกรุงปารีส ถือเป็นพระราชวังที่หรูหราและยิ่งใหญ่ที่สุดแห่งหนึ่งของโลก สร้างขึ้นในสมัยพระเจ้าหลุยส์ที่ 14 เพื่อแสดงถึงอำนาจและความรุ่งเรืองของราชวงศ์ฝรั่งเศส จุดเด่นคือห้องกระจกเงาที่ตกแต่งอย่างวิจิตรบรรจง และสวนแบบฝรั่งเศสขนาดใหญ่ที่ออกแบบอย่างเป็นระเบียบสวยงาม นักท่องเที่ยวสามารถเดินเล่นชมน้ำพุและประติมากรรมรอบสวนได้อย่างเพลิดเพลิน ในช่วงฤดูร้อนยังมีการแสดงน้ำพุดนตรีที่ดึงดูดผู้มาเยือนจากทั่วโลก ทำให้แวร์ซายเป็นทั้งพิพิธภัณฑ์ประวัติศาสตร์และสวนสาธารณะที่งดงาม</p>
+        <div class="attr-meta">
+          <span>📍 แวร์ซาย ใกล้ปารีส</span>
+          <span>🗓️ เม.ย.–ต.ค. (สวน)</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Mont Saint-Michel -->
+    <article class="attr-card">
+      <div class="attr-media">
+        <span class="attr-tag">ธรรมชาติ</span>
+        <span class="attr-num">03</span>
+        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3A4D74"/>
+              <stop offset="100%" stop-color="#1B2A4A"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="280" fill="url(#g3)"/>
+          <rect x="0" y="220" width="400" height="60" fill="#27395E"/>
+          <!-- rock island -->
+          <path d="M120 220 Q160 160 200 170 Q230 150 260 165 Q290 175 280 220 Z" fill="#4A5D80"/>
+          <!-- abbey building -->
+          <rect x="165" y="120" width="70" height="60" fill="#F6F1E7"/>
+          <path d="M165 120 L200 80 L235 120 Z" fill="#1B2A4A"/>
+          <rect x="195" y="55" width="10" height="30" fill="#1B2A4A"/>
+          <polygon points="195,55 205,55 200,45" fill="#C9A05A"/>
+          <rect x="180" y="140" width="14" height="40" fill="#9B8FB5"/>
+          <rect x="206" y="140" width="14" height="40" fill="#9B8FB5"/>
+          <circle cx="80" cy="60" r="40" fill="#F6F1E7" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="attr-body">
+        <h3>มงต์แซ็งมีแชล</h3>
+        <span class="attr-fr">Mont-Saint-Michel</span>
+        <p>มงต์แซ็งมีแชลเป็นเกาะหินขนาดเล็กกลางทะเลทางตอนเหนือของฝรั่งเศส มีอารามโบราณตั้งอยู่บนยอดเขาที่สร้างขึ้นตั้งแต่ศตวรรษที่ 8 จุดที่น่าทึ่งคือปรากฏการณ์น้ำขึ้นน้ำลงที่รวดเร็วที่สุดในยุโรป ทำให้เกาะนี้กลายเป็นแผ่นดินในบางช่วงและถูกล้อมด้วยน้ำทะเลในอีกช่วงเวลา นักท่องเที่ยวสามารถเดินขึ้นบันไดหินคดเคี้ยวผ่านร้านค้าและบ้านโบราณไปจนถึงยอดอาราม เพื่อชมวิวทะเลและผืนทรายกว้างไกลสุดลูกหูลูกตา ด้วยความงดงามทางสถาปัตยกรรมและทำเลที่ตั้งพิเศษ ที่นี่ได้รับการขึ้นทะเบียนเป็นมรดกโลกโดยองค์การยูเนสโก</p>
+        <div class="attr-meta">
+          <span>📍 นอร์มังดี</span>
+          <span>🗓️ เที่ยวได้ทั้งปี</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ WORLD TICKETS ============ -->
+<section id="tickets">
+  <span class="eyebrow">Collector's Series</span>
+  <div class="sec-head">
+    <h2>ตั๋วเดินทางรอบโลก</h2>
+    <p>หากฝรั่งเศสจุดประกายอยากออกเดินทาง นี่คือตั๋วเดินทางสะสมจากอีกสามจุดหมายปลายทางที่ไม่ควรพลาดเช่นกัน</p>
+  </div>
+
+  <div class="tickets-grid">
+
+    <!-- France -->
+    <article class="ticket-card">
+      <div class="ticket-inner">
+        <div class="ticket-media">
+          <div class="ticket-flagbar"><span style="background:#1B2A4A"></span><span style="background:#F6F1E7"></span><span style="background:#C8453D"></span></div>
+          <span class="ticket-country-tag">FRANCE</span>
+          <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tkFr" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9B8FB5"/>
+                <stop offset="60%" stop-color="#D9B98A"/>
+                <stop offset="100%" stop-color="#F6F1E7"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="400" fill="url(#tkFr)"/>
+            <circle cx="250" cy="90" r="38" fill="#C9A05A" opacity="0.75"/>
+            <rect x="0" y="300" width="320" height="100" fill="#1B2A4A"/>
+            <g fill="#1B2A4A">
+              <path d="M160 55 L142 295 L130 295 L153 62 Z"/>
+              <path d="M160 55 L178 295 L190 295 L167 62 Z"/>
+              <rect x="138" y="200" width="44" height="5"/>
+              <rect x="126" y="255" width="68" height="5"/>
+              <rect x="105" y="295" width="110" height="9"/>
+              <rect x="88" y="307" width="144" height="9"/>
+            </g>
+            <path d="M30 330 Q160 300 290 330" stroke="#3A4D74" stroke-width="5" fill="none"/>
+            <rect x="44" y="330" width="6" height="22" fill="#3A4D74"/>
+            <rect x="270" y="330" width="6" height="22" fill="#3A4D74"/>
+          </svg>
+        </div>
+        <div class="ticket-stub">
+          <h3>Pass Visite Paris</h3>
+          <span class="ticket-sub">Métro · RER · Bus · Zones 1–5</span>
+          <p>ตั๋วโดยสารรวมรถไฟใต้ดิน รถไฟชานเมือง และรถบัสทั่วปารีส เดินทางชมหอไอเฟลและพิพิธภัณฑ์ลูฟวร์ได้ในใบเดียว</p>
+          <div class="ticket-code-row">
+            <span>NO. FR-2026-0142</span>
+            <span class="barcode">
+              <span style="height:14px"></span><span style="height:9px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:13px"></span><span style="height:10px"></span><span style="height:15px"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- USA -->
+    <article class="ticket-card">
+      <div class="ticket-inner">
+        <div class="ticket-media">
+          <div class="ticket-flagbar"><span style="background:#1B2A4A"></span><span style="background:#F6F1E7"></span><span style="background:#C8453D"></span></div>
+          <span class="ticket-country-tag">UNITED STATES</span>
+          <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tkUs" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7FAEDE"/>
+                <stop offset="100%" stop-color="#C9DCEE"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="400" fill="url(#tkUs)"/>
+            <!-- skyline -->
+            <rect x="0" y="260" width="320" height="140" fill="#243B55"/>
+            <rect x="20" y="190" width="34" height="120" fill="#1B2A4A"/>
+            <rect x="64" y="160" width="30" height="150" fill="#2C4566"/>
+            <rect x="230" y="170" width="32" height="140" fill="#2C4566"/>
+            <rect x="270" y="200" width="30" height="110" fill="#1B2A4A"/>
+            <polygon points="170,90 190,260 150,260" fill="#1B2A4A"/>
+            <rect x="166" y="70" width="8" height="24" fill="#1B2A4A"/>
+            <!-- statue of liberty simplified -->
+            <rect x="150" y="190" width="40" height="70" fill="#6FA08C"/>
+            <path d="M150 190 Q170 165 190 190 Z" fill="#6FA08C"/>
+            <circle cx="170" cy="155" r="14" fill="#6FA08C"/>
+            <rect x="165" y="120" width="6" height="36" fill="#C9A05A"/>
+            <polygon points="160,118 180,118 170,105" fill="#C9A05A"/>
+            <!-- windows dots -->
+            <g fill="#F6F1E7" opacity="0.5">
+              <rect x="26" y="200" width="4" height="6"/><rect x="36" y="200" width="4" height="6"/>
+              <rect x="26" y="220" width="4" height="6"/><rect x="36" y="220" width="4" height="6"/>
+              <rect x="240" y="185" width="4" height="6"/><rect x="250" y="185" width="4" height="6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ticket-stub">
+          <h3>NYC MetroCard</h3>
+          <span class="ticket-sub">Subway · MTA · Manhattan</span>
+          <p>ตั๋วรถไฟใต้ดินนิวยอร์ก ใช้เดินทางสำรวจเทพีเสรีภาพ ไทม์สแควร์ และตึกระฟ้าใจกลางเมืองได้อย่างคุ้มค่า</p>
+          <div class="ticket-code-row">
+            <span>NO. US-2026-0987</span>
+            <span class="barcode">
+              <span style="height:10px"></span><span style="height:15px"></span><span style="height:8px"></span><span style="height:14px"></span><span style="height:11px"></span><span style="height:16px"></span><span style="height:9px"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- China -->
+    <article class="ticket-card">
+      <div class="ticket-inner">
+        <div class="ticket-media">
+          <div class="ticket-flagbar"><span style="background:#C8453D"></span><span style="background:#C8453D"></span><span style="background:#C9A05A"></span></div>
+          <span class="ticket-country-tag">中国 · CHINA</span>
+          <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tkCn" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C8453D"/>
+                <stop offset="100%" stop-color="#8C2E29"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="400" fill="url(#tkCn)"/>
+            <!-- great wall winding silhouette -->
+            <path d="M0 230 Q60 190 100 215 Q140 240 180 200 Q220 165 260 195 Q290 215 320 195 V260 H0 Z" fill="#5C231F"/>
+            <path d="M0 245 Q60 205 100 230 Q140 255 180 215 Q220 180 260 210 Q290 230 320 210 V270 H0 Z" fill="#732B25"/>
+            <!-- watchtower -->
+            <rect x="140" y="150" width="40" height="55" fill="#3A1714"/>
+            <rect x="132" y="142" width="56" height="14" fill="#3A1714"/>
+            <rect x="148" y="120" width="24" height="26" fill="#3A1714"/>
+            <rect x="140" y="112" width="40" height="10" fill="#C9A05A"/>
+            <rect x="0" y="270" width="320" height="130" fill="#5C231F"/>
+            <!-- sun -->
+            <circle cx="255" cy="80" r="32" fill="#C9A05A" opacity="0.85"/>
+          </svg>
+        </div>
+        <div class="ticket-stub">
+          <h3>中国铁路通票</h3>
+          <span class="ticket-sub">China Railway Pass · CRH</span>
+          <p>บัตรโดยสารรถไฟความเร็วสูงของจีน เดินทางเชื่อมเมืองใหญ่ได้สะดวก เหมาะสำหรับทริปชมกำแพงเมืองจีนและสถานที่ประวัติศาสตร์</p>
+          <div class="ticket-code-row">
+            <span>NO. CN-2026-0356</span>
+            <span class="barcode">
+              <span style="height:12px"></span><span style="height:8px"></span><span style="height:16px"></span><span style="height:10px"></span><span style="height:14px"></span><span style="height:9px"></span><span style="height:15px"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ FOOD & CULTURE ============ -->
+<section id="food">
+  <span class="eyebrow">Taste & Tradition</span>
+  <div class="sec-head">
+    <h2>อาหารและวัฒนธรรม</h2>
+    <p>รสชาติ ขนบ และเทศกาล คือสามองค์ประกอบที่หลอมรวมจิตวิญญาณของฝรั่งเศสไว้ในที่เดียว</p>
+  </div>
+
+  <!-- Food -->
+  <div class="fc-block">
+    <div class="fc-label"><span class="num">01</span><h2>อาหารขึ้นชื่อ</h2></div>
+    <div class="food-strip">
+
+      <div class="food-card">
+        <div class="food-media">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="220" fill="#D9B98A"/>
+            <ellipse cx="150" cy="165" rx="120" ry="20" fill="#1B2A4A"/>
+            <rect x="70" y="95" width="14" height="75" rx="5" fill="#E8D2A0"/>
+            <rect x="95" y="100" width="14" height="70" rx="5" fill="#E8D2A0"/>
+            <rect x="120" y="90" width="14" height="80" rx="5" fill="#E8D2A0"/>
+            <rect x="150" y="105" width="14" height="65" rx="5" fill="#C9A05A"/>
+            <rect x="175" y="95" width="14" height="75" rx="5" fill="#E8D2A0"/>
+            <rect x="200" y="100" width="14" height="70" rx="5" fill="#C9A05A"/>
+          </svg>
+        </div>
+        <div class="food-body">
+          <h3>ครัวซองต์ (Croissant)</h3>
+          <p>ขนมปังเนยเนื้อชั้นกรอบนอกนุ่มใน อาหารเช้าคู่กาแฟที่เป็นเอกลักษณ์ของฝรั่งเศสไปทั่วโลก</p>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <div class="food-media">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="220" fill="#9B8FB5"/>
+            <ellipse cx="150" cy="150" rx="105" ry="40" fill="#7E72A0"/>
+            <ellipse cx="150" cy="142" rx="95" ry="32" fill="#C8453D"/>
+            <circle cx="115" cy="135" r="10" fill="#F6F1E7"/>
+            <circle cx="150" cy="128" r="9" fill="#1B2A4A"/>
+            <circle cx="185" cy="138" r="10" fill="#F6F1E7"/>
+            <rect x="60" y="165" width="180" height="12" rx="6" fill="#1B2A4A"/>
+          </svg>
+        </div>
+        <div class="food-body">
+          <h3>หอยเอสคาร์โกต์ (Escargot)</h3>
+          <p>หอยทากอบเนยกระเทียมและพาร์สลีย์ เสิร์ฟร้อนในเปลือก เมนูคลาสสิกแบบฝรั่งเศสแท้</p>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <div class="food-media">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="220" fill="#C9A05A"/>
+            <rect x="55" y="115" width="190" height="22" rx="8" fill="#1B2A4A"/>
+            <ellipse cx="100" cy="105" rx="26" ry="18" fill="#E8D2A0"/>
+            <ellipse cx="155" cy="100" rx="24" ry="17" fill="#F6F1E7"/>
+            <ellipse cx="205" cy="108" rx="22" ry="16" fill="#E8D2A0"/>
+            <rect x="80" y="135" width="140" height="10" rx="4" fill="#C8453D"/>
+          </svg>
+        </div>
+        <div class="food-body">
+          <h3>มาการอง (Macaron)</h3>
+          <p>ขนมหวานเนื้อนิ่มสีสันสดใส สอดไส้ครีมหลากรสชาติ ของฝากขึ้นชื่อจากปารีส</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Culture -->
+  <div class="fc-block">
+    <div class="fc-label"><span class="num">02</span><h2>วัฒนธรรมที่น่าสนใจ</h2></div>
+    <div class="culture-grid">
+      <div class="culture-card">
+        <span class="fr">Mode — Haute Couture</span>
+        <h3>แฟชั่นชั้นสูง</h3>
+        <p>ปารีสคือเมืองหลวงแห่งแฟชั่นโลก เป็นที่ตั้งของแบรนด์ระดับตำนานอย่าง Chanel, Dior และ Louis Vuitton สัปดาห์แฟชั่นปารีสจัดขึ้นปีละสองครั้งและเป็นจุดหมายของนักออกแบบทั่วโลก</p>
+      </div>
+      <div class="culture-card">
+        <span class="fr">Art — Musées</span>
+        <h3>ศิลปะและพิพิธภัณฑ์</h3>
+        <p>ฝรั่งเศสเป็นแหล่งรวมงานศิลปะระดับโลกที่พิพิธภัณฑ์ลูฟวร์ ซึ่งเก็บรักษาภาพโมนาลิซาและประติมากรรมเวนัส เดอ มิโล รวมถึงพิพิธภัณฑ์ออร์แซที่โดดเด่นด้านงานอิมเพรสชันนิสม์</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Festivals -->
+  <div class="fc-block">
+    <div class="fc-label"><span class="num">03</span><h2>เทศกาลสำคัญ</h2></div>
+    <div class="festival-row">
+      <div class="festival-card">
+        <span class="when">14 ก.ค.</span>
+        <h4>วันชาติฝรั่งเศส</h4>
+        <p>เทศกาล Bastille Day ฉลองด้วยพาเหรดทางทหารที่ถนนชองป์เซลิเซ่ และพลุไฟทั่วประเทศ</p>
+      </div>
+      <div class="festival-card">
+        <span class="when">พ.ค.</span>
+        <h4>เทศกาลภาพยนตร์เมืองคานส์</h4>
+        <p>เทศกาลภาพยนตร์ที่ยิ่งใหญ่ที่สุดของโลก รวมดาราและผู้กำกับชั้นนำมาเดินพรมแดง</p>
+      </div>
+      <div class="festival-card">
+        <span class="when">ก.ค.</span>
+        <h4>ตูร์เดอฟรองซ์</h4>
+        <p>การแข่งจักรยานทางไกลที่มีประวัติยาวนานกว่าร้อยปี ปั่นผ่านภูมิประเทศสวยงามทั่วฝรั่งเศส</p>
+      </div>
+      <div class="festival-card">
+        <span class="when">ธ.ค.</span>
+        <h4>ตลาดคริสต์มาส</h4>
+        <p>ตลาดกลางแจ้งตกแต่งไฟสวยงามทั่วเมือง จำหน่ายของขวัญและขนมพื้นเมืองช่วงเทศกาล</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <span class="eyebrow">About the Creator</span>
+  <div class="sec-head">
+    <h2>ผู้จัดทำ</h2>
+    <p>เว็บไซต์แนะนำการท่องเที่ยวฝรั่งเศสนี้จัดทำขึ้นเพื่อเผยแพร่ข้อมูลด้านการท่องเที่ยว วัฒนธรรม และอาหารของประเทศฝรั่งเศส</p>
+  </div>
+
+<div class="about-wrap">
+  <div class="about-photo">
+    <div class="photo-frame">
+      <svg viewBox="0 0 360 480" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3A4D74"/>
+            <stop offset="100%" stop-color="#10182C"/>
+          </linearGradient>
+          <clipPath id="circular-clip">
+            <circle cx="180" cy="240" r="160" />
+          </clipPath>
+        </defs>
+        <rect width="360" height="480" fill="url(#pg)"/>
+        
+        <image 
+          xlink:href="IMG_4389.JPG" 
+          x="20" y="80" 
+          width="320" height="320" 
+          preserveAspectRatio="xMidYMid slice"
+          clip-path="url(#circular-clip)"
+        />
+        
+      </svg>
+    </div>
+    <span class="photo-caption">— ผู้จัดทำเว็บไซต์ —</span>
+  </div>
+</div>
+
+    <div class="about-info">
+      <h2>ชยภัทร อาทรสิริรัตน์</h2>
+      <span class="role">ผู้จัดทำโครงงานเว็บไซต์แนะนำการท่องเที่ยวประเทศฝรั่งเศส</span>
+
+      <table class="info-table">
+        <tr>
+          <td>ชื่อ-นามสกุล</td>
+          <td>นาย ชยภัทร อาทรสิริรัตน์</td>
+        </tr>
+        <tr>
+          <td>ระดับชั้น</td>
+          <td>ปวช ปีที่ 2/10</td>
+        </tr>
+        <tr>
+          <td>สาขาวิชา</td>
+          <td>เทคโนโลยีสารสนเทศ</td>
+        </tr>
+        <tr>
+          <td>วิทยาลัย</td>
+          <td>วิทยาลัยการจัดการเพชรเกษม</td>
+        </tr>
+      </table>
+
+      <div class="about-note">
+        จัดทำขึ้นเพื่อเผยแพร่ความรู้ด้านการท่องเที่ยวต่างประเทศ พร้อมฝึกฝนทักษะการออกแบบและพัฒนาเว็บไซต์ด้วย HTML และ CSS
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="fr">Merci beaucoup</span>
+  © 2026 Flâneur en France Travel Guide · จัดทำเพื่อการศึกษา
+</footer>
+
+<!-- ============ MUSIC POPUP ============ -->
+<button class="music-fab" id="musicFab" aria-label="เปิด/ปิดเพลงพื้นหลัง">
+  <span class="pulse-ring"></span>
+  <svg id="musicIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+    <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+  </svg>
+  <svg id="musicIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+    <line x1="3" y1="3" x2="21" y2="21" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<div class="music-popup" id="musicPopup">
+  <div class="music-popup-head">
+    <div class="label">My Way<small>Frank Sinatra · เพลงพื้นหลัง</small></div>
+    <button class="music-popup-close" id="musicClose" aria-label="ปิดหน้าต่างเพลง">✕</button>
+  </div>
+  <div class="music-popup-body">
+    <iframe id="spotifyFrame"
+      src="https://open.spotify.com/embed/track/3spdoTYpuCpmq19tuD0bOe?utm_source=generator&theme=0"
+      width="100%" height="152" frameborder="0" allowfullscreen=""
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"></iframe>
+  </div>
+  <div class="music-popup-foot">เล่นผ่าน Spotify · กดเล่นในเครื่องเพลงด้านบนได้เลย</div>
+</div>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navList = document.getElementById('navList');
+  navToggle.addEventListener('click', () => {
+    navList.classList.toggle('open');
+  });
+  navList.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navList.classList.remove('open'));
+  });
+
+  // Active section tracking (nav links + dots)
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sealDots = document.querySelectorAll('.seal-dot');
+
+  function setActive(id){
+    navLinks.forEach(l => l.classList.toggle('active', l.dataset.target === id));
+    sealDots.forEach(d => d.classList.toggle('active', d.dataset.target === id));
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && entry.intersectionRatio > 0.35){
+        setActive(entry.target.id);
+      }
+    });
+  }, { threshold: [0.35, 0.5, 0.65] });
+
+  sections.forEach(s => observer.observe(s));
+
+  sealDots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.getElementById(dot.dataset.target).scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  // Music popup toggle
+  const musicFab = document.getElementById('musicFab');
+  const musicPopup = document.getElementById('musicPopup');
+  const musicClose = document.getElementById('musicClose');
+  const iconOn = document.getElementById('musicIconOn');
+  const iconOff = document.getElementById('musicIconOff');
+
+  function openMusicPopup(){
+    musicPopup.classList.add('open');
+    musicFab.classList.add('playing');
+    iconOn.style.display = 'block';
+    iconOff.style.display = 'none';
+  }
+  function closeMusicPopup(){
+    musicPopup.classList.remove('open');
+    musicFab.classList.remove('playing');
+    iconOn.style.display = 'none';
+    iconOff.style.display = 'block';
+  }
+
+  musicFab.addEventListener('click', () => {
+    musicPopup.classList.contains('open') ? closeMusicPopup() : openMusicPopup();
+  });
+  musicClose.addEventListener('click', closeMusicPopup);
+</script>
+
+</body>
+</html>
